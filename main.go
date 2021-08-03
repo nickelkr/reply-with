@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("vim-go")
+	r := NewRouter()
+	srv := &http.Server{
+		Handler: r,
+		Addr:    ":3131",
+	}
+
+	log.Fatal(srv.ListenAndServe())
 }
