@@ -5,14 +5,21 @@ import (
 	"net/http"
 )
 
-func HealthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+type Endpoint struct {
+	Path string
+	Code uint16
 }
 
-func NewRouter() *mux.Router {
+func (e Endpoint) Handler() func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func NewRouter(endpoint Endpoint) *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/health", HealthHandler)
+	r.HandleFunc(endpoint.Path, endpoint.Handler())
 
 	return r
 }

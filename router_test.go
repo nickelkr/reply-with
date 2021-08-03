@@ -6,18 +6,22 @@ import (
 	"testing"
 )
 
-func TestSimpleGet(t *testing.T) {
-	req, err := http.NewRequest("GET", "/health", nil)
+func TestEndpointPath(t *testing.T) {
+	endpoint := Endpoint{
+		"/test",
+		200,
+	}
+
+	req, err := http.NewRequest("GET", "/test", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	recr := httptest.NewRecorder()
-
-	router := NewRouter()
+	router := NewRouter(endpoint)
 	router.ServeHTTP(recr, req)
 
 	if status := recr.Code; status != http.StatusOK {
-		t.Errorf("Wrong status code: go %v need %v", status, http.StatusOK)
+		t.Errorf("Wrong status code: got %v expected %v", status, http.StatusOK)
 	}
 }
