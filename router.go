@@ -7,13 +7,13 @@ import (
 
 type Endpoint struct {
 	Path string
-	Code uint16
+	Code int
 }
 
 func (e Endpoint) Handler() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(e.Code)
 	}
 }
 
