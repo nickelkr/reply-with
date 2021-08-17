@@ -7,8 +7,8 @@ import (
 
 func main() {
 	endpoint := Endpoint{
-		"/create",
-		201,
+		Path: "/create",
+		Code: 201,
 	}
 
 	r := NewRouter(endpoint)
