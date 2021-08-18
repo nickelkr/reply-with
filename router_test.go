@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -21,7 +22,6 @@ func TestEndpointPath(t *testing.T) {
 	router := NewRouter(endpoint)
 	router.ServeHTTP(recr, req)
 
-	// TODO: test body instead of Code
 	if status := recr.Code; status != http.StatusOK {
 		t.Errorf("Wrong status code: got %v expected %v", status, http.StatusOK)
 	}
@@ -48,10 +48,11 @@ func TestEndpointCode(t *testing.T) {
 }
 
 func TestEndpointBody(t *testing.T) {
+	payload := []byte("some data")
 	endpoint := Endpoint{
 		"/with_body",
 		200,
-		[]byte("some data"),
+		payload,
 	}
 
 	req, err := http.NewRequest("GET", "/with_body", nil)
@@ -63,7 +64,7 @@ func TestEndpointBody(t *testing.T) {
 	router := NewRouter(endpoint)
 	router.ServeHTTP(rec, req)
 
-	if body := rec.Body.String(); body != "some data" {
-		t.Errorf("Incorrect data: got %v expected %v", body, "{'status': true}")
+	if body := rec.Body.Bytes(); !bytes.Equal(body, payload) {
+		t.Errorf("Incorrect data: got %v expected %v", body, payload)
 	}
 }
